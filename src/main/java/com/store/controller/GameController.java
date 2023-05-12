@@ -6,6 +6,7 @@ import com.store.service.GameService;
 import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -46,7 +47,7 @@ public class GameController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response findAllGames(@QueryParam("page") @DefaultValue("0") int page,
-                                 @QueryParam("size") @DefaultValue("3")int size,
+                                 @QueryParam("size") @DefaultValue("5")int size,
                                  @QueryParam("sort") @DefaultValue("id") String sort,
                                  @QueryParam("direction") @DefaultValue("Ascending") Sort.Direction direction
     ){
@@ -54,4 +55,21 @@ public class GameController {
         List<GameResponseDTO> allGames = gameService.findAllGames(pageble, sort, direction);
         return Response.ok(allGames).build();
     }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{id}")
+    public Response updateGame(@PathParam("id") Long id,  @Valid GameRequestDTO gameRequestDTO){
+        GameResponseDTO game = gameService.updateGame(id, gameRequestDTO);
+        return Response.ok(game).build();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public Response deleGame(@PathParam("id") Long id){
+        gameService.deleteGame(id);
+        return Response.noContent().build();
+    }
+
 }

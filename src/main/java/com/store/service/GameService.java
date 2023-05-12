@@ -30,13 +30,7 @@ public class GameService {
 
     @Transactional
     public GameResponseDTO findGameById(Long id) {
-        Game game = gamesRepository.findById(id);
-
-        if (game == null) {
-            throw new GameNotFoundException("Could not find this game in the database");
-        }
-
-        return new GameResponseDTO(game);
+        return new GameResponseDTO(getGameEntity(id));
     }
 
     @Transactional
@@ -46,5 +40,32 @@ public class GameService {
                 .stream()
                 .toList();
         return list.stream().map(GameResponseDTO::new).toList();
+    }
+
+    @Transactional
+    public GameResponseDTO updateGame(Long id, GameRequestDTO gameRequestDTO){
+        Game game = getGameEntity(id);
+        game.setTitle(gameRequestDTO.title());
+        game.setDescription(gameRequestDTO.description());
+        game.setReleaseDate(gameRequestDTO.releaseDate());
+        game.setTrailerUrl(game.getTrailerUrl());
+
+        gamesRepository.persist(game);
+
+        return new GameResponseDTO(game);
+    }
+
+    @Transactional
+    public void deleteGame(Long id){
+        gamesRepository.delete(getGameEntity(id));
+    }
+    private Game getGameEntity(Long id) {
+        Game game = gamesRepository.findById(id);
+
+        if (game == null) {
+            throw new GameNotFoundException("Could not find this game in the database");
+        }
+
+        return game;
     }
 }

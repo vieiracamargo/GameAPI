@@ -24,4 +24,14 @@ public record GameResponseDTO(
                 game.getTrailerUrl()
         );
     }
+
+    public Game toEntity(){
+        return new Game(
+                this.id,
+                this.title(),
+                this.description(),
+                this.releaseDate(),
+                this.trailerUrl()
+        );
+    }
 }
