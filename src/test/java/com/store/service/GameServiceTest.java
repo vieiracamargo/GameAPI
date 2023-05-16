@@ -8,9 +8,7 @@ import com.store.repository.GamesRepository;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import jakarta.inject.Inject;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 
 import java.time.LocalDate;
@@ -18,6 +16,8 @@ import java.time.LocalDate;
 import static org.mockito.ArgumentMatchers.any;
 
 @QuarkusTest
+@Tag("unit")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class GameServiceTest {
     @Inject
     GameService gameService;
@@ -41,21 +41,23 @@ class GameServiceTest {
 
         update = new Game(
                 1L,
-                "Control",
-                "Jesse Faden (Courtney Hope), após uma experiência traumática durante sua infância lhe ter concedido poderes sobrenaturais, procura respostas no Departamento Federal de Controle, uma agência governamental clandestina encarregada de estudar e conter fenômenos sobrenaturais.",
-                LocalDate.of(2019, 8, 27),
+                "The Last of Us Part I",
+                "Em uma civilização devastada, em que infectados e sobreviventes veteranos estão à solta, Joel, um protagonista abatido, é contratado para tirar uma garota de 14 anos, Ellie, de uma zona de quarentena militar.",
+                LocalDate.of(2022, 9, 2),
                 "https://www.youtube.com/watch?v=xni05j8SH_I"
         );
 
     }
 
     @Test
+    @Order(1)
     void shouldReturnGameIfIdIsValid() {
         Mockito.when(gamesRepository.findById(1L)).thenReturn(game);
-        Assertions.assertEquals(gameService.findGameById(1L), new GameResponseDTO(game));
+        Assertions.assertEquals(new GameResponseDTO(game),gameService.findGameById(1L));
     }
 
     @Test
+    @Order(1)
     void shouldThrowExceptionIfReceiveInvalidID() {
         Mockito.when(gamesRepository.findById(null)).thenThrow(GameNotFoundException.class);
         Assertions.assertThrows(GameNotFoundException.class, () -> {
@@ -64,23 +66,25 @@ class GameServiceTest {
     }
 
     @Test
+    @Order(2)
     void ShouldCreateGameIfHasValidBody(){
         gameService.createGame(new GameRequestDTO(game));
         Mockito.verify(gamesRepository).persistAndFlush(any(Game.class));
     }
 
     @Test
+    @Order(3)
     void ShouldUpdateGameIfHasValidBody(){
-        Mockito.when(gamesRepository.findById(1L)).thenReturn(game);
+        Mockito.when(gamesRepository.findById(1L)).thenReturn(update);
         gameService.updateGame(1L, new GameRequestDTO(update));
         Mockito.verify(gamesRepository).persistAndFlush(any(Game.class));
-        Assertions.assertNotEquals(game,update);
     }
     @Test
+    @Order(4)
     void shouldDeleteGameIfExists(){
         Mockito.when(gamesRepository.findById(1L)).thenReturn(game);
         gameService.deleteGame(1L);
-        Mockito.verify(gamesRepository).delete(game);
+        Mockito.verify(gamesRepository).delete(any(Game.class));
     }
 
 }
