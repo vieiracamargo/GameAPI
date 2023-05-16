@@ -21,6 +21,14 @@ public record GameRequestDTO(
         @NotBlank(message = "trailerUrl can not be empty")
         String trailerUrl
 ) {
+    public GameRequestDTO(Game game){
+        this(
+                game.getTitle(),
+                game.getDescription(),
+                game.getReleaseDate(),
+                game.getTrailerUrl()
+        );
+    }
     public Game toEntity(){
         return new Game(
                 null,
