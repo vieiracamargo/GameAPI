@@ -50,7 +50,7 @@ public class GameService {
         game.setReleaseDate(gameRequestDTO.releaseDate());
         game.setTrailerUrl(game.getTrailerUrl());
 
-        gamesRepository.persist(game);
+        gamesRepository.persistAndFlush(game);
 
         return new GameResponseDTO(game);
     }
