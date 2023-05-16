@@ -48,7 +48,7 @@ public class GameService {
         game.setTitle(gameRequestDTO.title());
         game.setDescription(gameRequestDTO.description());
         game.setReleaseDate(gameRequestDTO.releaseDate());
-        game.setTrailerUrl(game.getTrailerUrl());
+        game.setTrailerUrl(gameRequestDTO.trailerUrl());
 
         gamesRepository.persistAndFlush(game);
 
