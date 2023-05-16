@@ -2,7 +2,7 @@ package com.store.controller;
 
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,9 +12,12 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 
 @QuarkusTest
+@Tag("integration")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestHTTPEndpoint(GameController.class)
 class GameControllerTest {
     @Test
+    @Order(1)
     void getGameById() {
         given()
                 .pathParam("id", 1)
@@ -30,6 +33,7 @@ class GameControllerTest {
     }
 
     @Test
+    @Order(1)
     void getAllGames() {
         given()
                 .when().get()
@@ -39,6 +43,7 @@ class GameControllerTest {
     }
 
     @Test
+    @Order(2)
     void createGame() {
         Map<String,String> game = new HashMap<>();
         game.put("title", "The Last of Us Part I");
@@ -61,6 +66,7 @@ class GameControllerTest {
     }
 
     @Test
+    @Order(3)
     void updateGame() {
         Map<String,String> game = new HashMap<>();
         game.put("title", "Elden Ring");
@@ -84,6 +90,7 @@ class GameControllerTest {
     }
 
     @Test
+    @Order(4)
     void deleGameById() {
         given()
                 .pathParam("id", 1)
@@ -91,7 +98,6 @@ class GameControllerTest {
                 .then()
                 .statusCode(204);
     }
-
 
 
 }
